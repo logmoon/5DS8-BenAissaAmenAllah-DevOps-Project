@@ -1,0 +1,85 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">📋 Projets Détaillés</h1>
+      <p class="page-subtitle">Gérer les détails techniques et financiers des projets</p>
+    </div>
+    <button class="btn btn-primary" (click)="openAdd()">+ Ajouter</button>
+  </div>
+
+  @if (showForm()) {
+    <div class="form-card">
+      <h3 class="form-title">{{ editMode() ? 'Modifier' : 'Nouveau' }} Projet Détaillé</h3>
+      <div class="form-grid">
+        <div class="form-group" style="grid-column: 1 / -1">
+          <label>Description</label>
+          <input type="text" [value]="current().description" (input)="update('description', $any($event.target).value)" placeholder="Description du projet" />
+        </div>
+        <div class="form-group">
+          <label>Technologie</label>
+          <input type="text" [value]="current().technologie" (input)="update('technologie', $any($event.target).value)" placeholder="Ex: Java, Docker, K8s..." />
+        </div>
+        <div class="form-group">
+          <label>Coût Provisoire (DT)</label>
+          <input type="number" [value]="current().coutProvisoire" (input)="update('coutProvisoire', +$any($event.target).value)" placeholder="0.00" />
+        </div>
+        <div class="form-group">
+          <label>Date de début</label>
+          <input type="date" [value]="current().dateDebut" (input)="update('dateDebut', $any($event.target).value)" />
+        </div>
+        <div class="form-group">
+          <label>Projet</label>
+          <select [value]="selectedProjetId() ?? ''" (change)="selectedProjetId.set($any($event.target).value ? +$any($event.target).value : null)">
+            <option value="">-- Sélectionner un projet --</option>
+            @for (p of projets(); track p.id) {
+              <option [value]="p.id">{{ p.sujet }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" (click)="save()">{{ editMode() ? 'Mettre à jour' : 'Enregistrer' }}</button>
+        <button class="btn btn-secondary" (click)="cancel()">Annuler</button>
+      </div>
+    </div>
+  }
+
+  <div class="card">
+    @if (projetsDetailles().length === 0) {
+      <div class="empty">
+        <div class="empty-icon">📋</div>
+        <p>Aucun projet détaillé enregistré</p>
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Description</th>
+            <th>Technologie</th>
+            <th>Coût (DT)</th>
+            <th>Date début</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (pd of projetsDetailles(); track pd.id) {
+            <tr>
+              <td><span class="badge">{{ pd.id }}</span></td>
+              <td>{{ pd.description }}</td>
+              <td><span class="chip">{{ pd.technologie }}</span></td>
+              <td><strong>{{ pd.coutProvisoire | number }} DT</strong></td>
+              <td>{{ pd.dateDebut }}</td>
+              <td>
+                <div class="actions">
+                  <button class="btn btn-secondary btn-sm" (click)="edit(pd)">✏️ Modifier</button>
+                  <button class="btn btn-danger btn-sm" (click)="delete(pd.id!)">🗑️ Supprimer</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">📁 Projets</h1>
+      <p class="page-subtitle">Gérer les projets de l'organisation</p>
+    </div>
+    <button class="btn btn-primary" (click)="openAdd()">+ Ajouter</button>
+  </div>
+
+  @if (showForm()) {
+    <div class="form-card">
+      <h3 class="form-title">{{ editMode() ? 'Modifier' : 'Nouveau' }} Projet</h3>
+      <div class="form-grid">
+        <div class="form-group" style="grid-column: 1 / -1">
+          <label>Sujet</label>
+          <input type="text" [value]="current().sujet" (input)="update('sujet', $any($event.target).value)" placeholder="Sujet du projet" />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" (click)="save()">{{ editMode() ? 'Mettre à jour' : 'Enregistrer' }}</button>
+        <button class="btn btn-secondary" (click)="cancel()">Annuler</button>
+      </div>
+    </div>
+  }
+
+  <div class="card">
+    @if (projets().length === 0) {
+      <div class="empty">
+        <div class="empty-icon">📁</div>
+        <p>Aucun projet enregistré</p>
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Sujet</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of projets(); track p.id) {
+            <tr>
+              <td><span class="badge">{{ p.id }}</span></td>
+              <td><strong>{{ p.sujet }}</strong></td>
+              <td>
+                <div class="actions">
+                  <button class="btn btn-secondary btn-sm" (click)="edit(p)">✏️ Modifier</button>
+                  <button class="btn btn-danger btn-sm" (click)="delete(p.id!)">🗑️ Supprimer</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
